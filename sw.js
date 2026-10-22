@@ -1,4 +1,4 @@
-const CACHE = "ma-resume-v2";
+const CACHE = "ma-resume-v3";
 const ASSETS = [
   "./",
   "./index.html",
