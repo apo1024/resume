@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0d1117" />
+<title>Miracle Apollon — IT Resume</title>
+<meta name="description" content="Scan the QR to open my resume, or share it to a contact." />
+<link rel="manifest" href="./manifest.json" />
+<link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+<link rel="icon" href="./favicon.png" type="image/png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="MA Resume" />
+<style>
+  :root {
+    --bg: #0d1117;
+    --fg: #f0f6fc;
+    --muted: #8b949e;
+    --card: #161b22;
+    --border: #30363d;
+    --accent: #2f81f7;
+    --accent-fg: #ffffff;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #ffffff;
+      --fg: #0d1117;
+      --muted: #57606a;
+      --card: #f6f8fa;
+      --border: #d0d7de;
+      --accent: #0969da;
+      --accent-fg: #ffffff;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--fg);
+    font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  main {
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 20px 18px 40px;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+  }
+  header .role { color: var(--muted); font-size: 14px; margin: 0; }
+  header .meta { color: var(--muted); font-size: 13px; margin: 6px 0 0; }
+  header .meta a { color: var(--accent); text-decoration: none; }
+
+  .qr-card {
+    background: #ffffff;
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    margin-bottom: 16px;
+  }
+  .qr-card img {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    image-rendering: pixelated;
+  }
+
+  .qr-caption {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  .qr-caption code {
+    font-size: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 6px;
+    color: var(--fg);
+    word-break: break-all;
+  }
+
+  .actions {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  button, .btn {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--fg);
+    font: inherit;
+    font-weight: 500;
+    padding: 14px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    text-decoration: none;
+    transition: transform 0.06s ease, border-color 0.15s ease;
+  }
+  button:active, .btn:active { transform: scale(0.98); }
+  button:hover, .btn:hover { border-color: var(--muted); }
+  button.primary {
+    background: var(--accent);
+    color: var(--accent-fg);
+    border-color: transparent;
+  }
+  button.primary:hover { border-color: transparent; opacity: 0.95; }
+  .icon {
+    width: 24px; height: 24px; flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .icon svg { width: 22px; height: 22px; }
+  .btn-label { flex: 1; }
+  .btn-sub { color: var(--muted); font-size: 12px; display: block; margin-top: 1px; font-weight: 400; }
+
+  .install-hint {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+  .install-hint strong { color: var(--fg); }
+
+  dialog {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--fg);
+    padding: 20px;
+    max-width: 340px;
+    width: calc(100% - 32px);
+  }
+  dialog::backdrop { background: rgba(0,0,0,0.6); }
+  dialog h3 { margin: 0 0 10px; font-size: 16px; }
+  dialog input[type="tel"], dialog input[type="email"] {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--fg);
+    font: inherit;
+    margin-bottom: 10px;
+  }
+  dialog .row { display: flex; gap: 10px; justify-content: flex-end; }
+  dialog button { width: auto; padding: 10px 14px; }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    background: var(--card);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 24px;
+  }
+  footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Miracle D. Apollon</h1>
+    <p class="role">IT Support Specialist &middot; Chicago, IL</p>
+    <p class="meta"><a href="https://www.linkedin.com/in/miracle-apollon-83594221" target="_blank" rel="noopener">LinkedIn</a> &middot; <a href="https://github.com/apo1024/resume" target="_blank" rel="noopener">GitHub</a></p>
+  </header>
+
+  <div class="qr-card">
+    <img id="qrImg" src="./resume-qr.png" alt="QR code pointing to Miracle Apollon's resume" width="820" height="820" />
+  </div>
+  <p class="qr-caption">Scan to open my resume &middot; <code id="resumeUrl">github.com/apo1024/resume</code></p>
+
+  <div class="actions">
+    <button id="shareBtn" class="primary" type="button">
+      <span class="icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      </span>
+      <span class="btn-label">Share<span class="btn-sub">Opens iPhone share sheet (Mail, Messages, AirDrop, WhatsApp...)</span></span>
+    </button>
+
+    <a class="btn" id="emailBtn" href="#">
+      <span class="icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </span>
+      <span class="btn-label">Email my resume<span class="btn-sub">Pre-fills a message with the links</span></span>
+    </a>
+
+    <button class="btn" id="smsBtn" type="button">
+      <span class="icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      </span>
+      <span class="btn-label">Text to a phone number<span class="btn-sub">iOS opens Messages pre-filled</span></span>
+    </button>
+
+    <a class="btn" href="./Miracle-Apollon-IT-Resume.pdf" target="_blank" rel="noopener">
+      <span class="icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </span>
+      <span class="btn-label">View / Download CV<span class="btn-sub">PDF, ~487 KB</span></span>
+    </a>
+
+    <a class="btn" href="./resume-qr.png" download="miracle-resume-qr.png">
+      <span class="icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      </span>
+      <span class="btn-label">Save QR to Photos / Files<span class="btn-sub">Long-press the QR above also works</span></span>
+    </a>
+  </div>
+
+  <div class="install-hint" id="iosInstallHint" hidden>
+    <strong>Install on iPhone:</strong> tap <span aria-hidden="true">&#x1f5d2;</span> Share, then <strong>Add to Home Screen</strong>. The app will live on your Home Screen like a native app and work offline.
+  </div>
+
+  <footer>
+    Private page &middot; built for Miracle Apollon
+  </footer>
+</main>
+
+<dialog id="smsDialog">
+  <h3>Text my resume</h3>
+  <p style="color:var(--muted);font-size:13px;margin:0 0 10px">Enter a phone number. Your iPhone's Messages app will open with the message pre-filled; nothing is sent automatically.</p>
+  <input type="tel" id="smsNumber" placeholder="+1 (555) 123-4567" autocomplete="tel" />
+  <div class="row">
+    <button type="button" id="smsCancel">Cancel</button>
+    <button type="button" class="primary" id="smsConfirm">Open Messages</button>
+  </div>
+</dialog>
+
+<dialog id="emailDialog">
+  <h3>Email my resume</h3>
+  <p style="color:var(--muted);font-size:13px;margin:0 0 10px">Enter the recipient's email (optional). Your Mail app will open with the message pre-filled; nothing is sent automatically.</p>
+  <input type="email" id="emailAddr" placeholder="recipient@example.com" autocomplete="email" />
+  <div class="row">
+    <button type="button" id="emailCancel">Cancel</button>
+    <button type="button" class="primary" id="emailConfirm">Open Mail</button>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  const RESUME_URL  = "https://github.com/apo1024/resume";
+  const RESUME_PDF  = "https://raw.githubusercontent.com/apo1024/resume/main/Miracle-Apollon-IT-Resume.pdf";
+  const QR_URL      = "https://raw.githubusercontent.com/apo1024/resume/main/resume-qr.png";
+  const NAME        = "Miracle D. Apollon";
+  const SHARE_TITLE = NAME + " — IT Resume";
+  const SHARE_TEXT  = "Hi, here is " + NAME + "'s IT resume: " + RESUME_URL + " (PDF: " + RESUME_PDF + ")";
+
+  const toast = document.getElementById("toast");
+  function flash(msg) {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(flash._t);
+    flash._t = setTimeout(() => toast.classList.remove("show"), 2200);
+  }
+
+  // Native share (Web Share API) — on iOS Safari this opens the OS share sheet.
+  document.getElementById("shareBtn").addEventListener("click", async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: SHARE_TITLE, text: SHARE_TEXT, url: RESUME_URL });
+      } catch (err) {
+        if (err && err.name !== "AbortError") flash("Share cancelled.");
+      }
+    } else if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(RESUME_URL + "\n" + RESUME_PDF);
+        flash("Link copied to clipboard.");
+      } catch { flash("Could not copy — long-press the QR instead."); }
+    } else {
+      flash("Share not supported here. Copy the link manually.");
+    }
+  });
+
+  // Email — opens the Mail app with the message prefilled.
+  const emailDialog = document.getElementById("emailDialog");
+  function buildMailto(addr) {
+    const subject = encodeURIComponent(SHARE_TITLE);
+    const body = encodeURIComponent(
+      "Hi,\n\nPlease find my IT resume below:\n\n" +
+      "- Resume page: " + RESUME_URL + "\n" +
+      "- Direct PDF: " + RESUME_PDF + "\n\n" +
+      "Best,\n" + NAME + "\nayitiwifi@gmail.com\n"
+    );
+    return "mailto:" + encodeURIComponent(addr || "") + "?subject=" + subject + "&body=" + body;
+  }
+  document.getElementById("emailBtn").addEventListener("click", (e) => {
+    e.preventDefault();
+    if (typeof emailDialog.showModal === "function") {
+      document.getElementById("emailAddr").value = "";
+      emailDialog.showModal();
+    } else {
+      location.href = buildMailto("");
+    }
+  });
+  document.getElementById("emailCancel").addEventListener("click", () => emailDialog.close());
+  document.getElementById("emailConfirm").addEventListener("click", () => {
+    const addr = document.getElementById("emailAddr").value.trim();
+    location.href = buildMailto(addr);
+    emailDialog.close();
+  });
+
+  // SMS — opens Messages app with the message prefilled.
+  const smsDialog = document.getElementById("smsDialog");
+  function buildSmsHref(num) {
+    const body = encodeURIComponent(
+      "Hi, this is " + NAME + ". Here is my IT resume: " + RESUME_URL +
+      " (PDF: " + RESUME_PDF + ")"
+    );
+    const n = (num || "").replace(/[^+\d]/g, "");
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const sep = isIOS ? "&" : "?";
+    return "sms:" + n + sep + "body=" + body;
+  }
+  document.getElementById("smsBtn").addEventListener("click", () => {
+    if (typeof smsDialog.showModal === "function") {
+      document.getElementById("smsNumber").value = "";
+      smsDialog.showModal();
+    } else {
+      location.href = buildSmsHref("");
+    }
+  });
+  document.getElementById("smsCancel").addEventListener("click", () => smsDialog.close());
+  document.getElementById("smsConfirm").addEventListener("click", () => {
+    const num = document.getElementById("smsNumber").value.trim();
+    location.href = buildSmsHref(num);
+    smsDialog.close();
+  });
+
+  // iOS install hint — only show when running in Safari and not already installed.
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isStandalone = window.navigator.standalone === true ||
+    window.matchMedia("(display-mode: standalone)").matches;
+  if (isIOS && !isStandalone) {
+    document.getElementById("iosInstallHint").hidden = false;
+  }
+
+  // Register service worker for offline support.
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
