@@ -209,7 +209,7 @@
   <div class="qr-card">
     <img id="qrImg" src="./resume-qr.png" alt="QR code pointing to Miracle Apollon's resume" width="820" height="820" />
   </div>
-  <p class="qr-caption">Scan to open my resume &middot; <code id="resumeUrl">github.com/apo1024/resume</code></p>
+  <p class="qr-caption">Scan to open my resume &middot; <code id="resumeUrl">apo1024.github.io/resume</code></p>
 
   <div class="actions">
     <button id="shareBtn" class="primary" type="button">
@@ -237,7 +237,7 @@
       <span class="icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       </span>
-      <span class="btn-label">View / Download CV<span class="btn-sub">PDF, ~140 KB &middot; recruiter-focused</span></span>
+      <span class="btn-label">View / Download CV<span class="btn-sub">PDF, ~290 KB &middot; updated Oct 2026</span></span>
     </a>
 
     <a class="btn" href="./resume-qr.png" download="miracle-resume-qr.png">
@@ -280,12 +280,12 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-  const RESUME_URL  = "https://github.com/apo1024/resume";
-  const RESUME_PDF  = "https://raw.githubusercontent.com/apo1024/resume/main/Miracle-Apollon-IT-Resume.pdf";
+  const RESUME_URL  = "https://apo1024.github.io/resume/Miracle-Apollon-IT-Resume.pdf";
+  const RESUME_PDF  = "https://apo1024.github.io/resume/Miracle-Apollon-IT-Resume.pdf";
   const QR_URL      = "https://raw.githubusercontent.com/apo1024/resume/main/resume-qr.png";
   const NAME        = "Miracle D. Apollon";
   const SHARE_TITLE = NAME + " — IT Resume";
-  const SHARE_TEXT  = "Hi, here is " + NAME + "'s IT resume: " + RESUME_URL + " (PDF: " + RESUME_PDF + ")";
+  const SHARE_TEXT  = "Hi, here is " + NAME + "'s IT resume: " + RESUME_URL;
 
   const toast = document.getElementById("toast");
   function flash(msg) {
@@ -305,7 +305,7 @@
       }
     } else if (navigator.clipboard) {
       try {
-        await navigator.clipboard.writeText(RESUME_URL + "\n" + RESUME_PDF);
+        await navigator.clipboard.writeText(RESUME_URL);
         flash("Link copied to clipboard.");
       } catch { flash("Could not copy — long-press the QR instead."); }
     } else {
@@ -319,8 +319,7 @@
     const subject = encodeURIComponent(SHARE_TITLE);
     const body = encodeURIComponent(
       "Hi,\n\nPlease find my IT resume below:\n\n" +
-      "- Resume page: " + RESUME_URL + "\n" +
-      "- Direct PDF: " + RESUME_PDF + "\n\n" +
+      RESUME_URL + "\n\n" +
       "Best,\n" + NAME + "\nayitiwifi@gmail.com\n"
     );
     return "mailto:" + encodeURIComponent(addr || "") + "?subject=" + subject + "&body=" + body;
@@ -345,8 +344,7 @@
   const smsDialog = document.getElementById("smsDialog");
   function buildSmsHref(num) {
     const body = encodeURIComponent(
-      "Hi, this is " + NAME + ". Here is my IT resume: " + RESUME_URL +
-      " (PDF: " + RESUME_PDF + ")"
+      "Hi, this is " + NAME + ". Here is my IT resume: " + RESUME_URL
     );
     const n = (num || "").replace(/[^+\d]/g, "");
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
