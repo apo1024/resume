@@ -1,8 +1,9 @@
-const CACHE = "ma-resume-v7";
+const CACHE = "ma-resume-v8";
 const ASSETS = [
   "./",
   "./index.html",
   "./resume-qr.png",
+  "./linkedin-qr.png",
   "./icon-192.png",
   "./icon-512.png",
   "./apple-touch-icon.png",

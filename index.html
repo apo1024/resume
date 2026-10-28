@@ -63,6 +63,15 @@
   header .meta { color: var(--muted); font-size: 13px; margin: 6px 0 0; }
   header .meta a { color: var(--accent); text-decoration: none; }
 
+  .qr-tabs {
+    display: flex; gap: 6px; margin-bottom: 10px; padding: 4px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  }
+  .qr-tabs button {
+    flex: 1; justify-content: center; text-align: center; padding: 9px;
+    border: 0; background: transparent; color: var(--muted); border-radius: 9px;
+  }
+  .qr-tabs button.on { background: var(--accent); color: var(--accent-fg); }
   .qr-card {
     background: #ffffff;
     border-radius: var(--radius);
@@ -206,10 +215,14 @@
     <p class="meta"><a href="https://www.linkedin.com/in/miracle-apollon-83594221" target="_blank" rel="noopener">LinkedIn</a></p>
   </header>
 
+  <div class="qr-tabs" role="tablist">
+    <button type="button" role="tab" id="tabResume" class="on" aria-selected="true">Resume</button>
+    <button type="button" role="tab" id="tabLinkedin" aria-selected="false">LinkedIn</button>
+  </div>
   <div class="qr-card">
     <img id="qrImg" src="./resume-qr.png" alt="QR code pointing to Miracle Apollon's resume" width="820" height="820" />
   </div>
-  <p class="qr-caption">Scan to open my resume &middot; <code id="resumeUrl">miracleapollon.com/resume</code></p>
+  <p class="qr-caption"><span id="qrLead">Scan to open my resume</span> &middot; <code id="resumeUrl">miracleapollon.com/resume</code></p>
 
   <div class="actions">
     <button id="shareBtn" class="primary" type="button">
@@ -219,11 +232,18 @@
       <span class="btn-label">AirDrop &middot; Share<span class="btn-sub">iPhone-to-iPhone over Bluetooth / Wi-Fi, no email or number needed. Also opens Mail, Messages, WhatsApp...</span></span>
     </button>
 
+    <button class="btn" id="shareLinkedinBtn" type="button">
+      <span class="icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+      </span>
+      <span class="btn-label">Share my LinkedIn<span class="btn-sub">AirDrop, WhatsApp, Messages... or copies the link</span></span>
+    </button>
+
     <a class="btn" id="emailBtn" href="#">
       <span class="icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
       </span>
-      <span class="btn-label">Email my resume<span class="btn-sub">Pre-fills a message with the links</span></span>
+      <span class="btn-label">Email my resume<span class="btn-sub">Pre-fills a message with my resume + LinkedIn</span></span>
     </a>
 
     <button class="btn" id="smsBtn" type="button">
@@ -283,6 +303,7 @@
   const RESUME_URL  = "https://miracleapollon.com/resume/Miracle-Apollon-IT-Resume.pdf";
   const RESUME_PDF  = "https://miracleapollon.com/resume/Miracle-Apollon-IT-Resume.pdf";
   const QR_URL      = "https://miracleapollon.com/resume/resume-qr.png";
+  const LINKEDIN_URL = "https://www.linkedin.com/in/miracle-apollon-83594221";
   const NAME        = "Miracle D. Apollon";
   const SHARE_TITLE = NAME + " — IT Resume";
   const SHARE_TEXT  = "Hi, here is " + NAME + "'s IT resume: " + RESUME_URL;
@@ -313,6 +334,42 @@
     }
   });
 
+  // LinkedIn share — same share sheet, LinkedIn profile link.
+  document.getElementById("shareLinkedinBtn").addEventListener("click", async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: NAME + " — LinkedIn", text: "Connect with " + NAME + " on LinkedIn:", url: LINKEDIN_URL });
+      } catch (err) {
+        if (err && err.name !== "AbortError") flash("Share cancelled.");
+      }
+    } else if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(LINKEDIN_URL);
+        flash("LinkedIn link copied.");
+      } catch { flash("Could not copy — scan the LinkedIn QR instead."); }
+    }
+  });
+
+  // QR tabs — switch the big QR between the resume and LinkedIn.
+  const qrImg = document.getElementById("qrImg");
+  const tabs = {
+    tabResume:   ["./resume-qr.png",   "Scan to open my resume",   document.getElementById("resumeUrl").textContent],
+    tabLinkedin: ["./linkedin-qr.png", "Scan to open my LinkedIn", "linkedin.com/in/miracle-apollon"],
+  };
+  for (const id of Object.keys(tabs)) {
+    document.getElementById(id).addEventListener("click", () => {
+      const [src, lead, label] = tabs[id];
+      qrImg.src = src;
+      document.getElementById("qrLead").textContent = lead;
+      document.getElementById("resumeUrl").textContent = label;
+      for (const other of Object.keys(tabs)) {
+        const b = document.getElementById(other);
+        b.classList.toggle("on", other === id);
+        b.setAttribute("aria-selected", String(other === id));
+      }
+    });
+  }
+
   // Email — opens the Mail app with the message prefilled.
   const emailDialog = document.getElementById("emailDialog");
   function buildMailto(addr) {
@@ -320,6 +377,7 @@
     const body = encodeURIComponent(
       "Hi,\n\nPlease find my IT resume below:\n\n" +
       RESUME_URL + "\n\n" +
+      "LinkedIn: " + LINKEDIN_URL + "\n\n" +
       "Best,\n" + NAME + "\nayitiwifi@gmail.com\n"
     );
     return "mailto:" + encodeURIComponent(addr || "") + "?subject=" + subject + "&body=" + body;
@@ -344,7 +402,8 @@
   const smsDialog = document.getElementById("smsDialog");
   function buildSmsHref(num) {
     const body = encodeURIComponent(
-      "Hi, this is " + NAME + ". Here is my IT resume: " + RESUME_URL
+      "Hi, this is " + NAME + ". Here is my IT resume: " + RESUME_URL +
+      " — LinkedIn: " + LINKEDIN_URL
     );
     const n = (num || "").replace(/[^+\d]/g, "");
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
